@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
-// const connectDB = require("../config/connection");
+const connectDB = require("./config/connection");
 const app = express();
 
 app.use(
@@ -16,10 +16,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 const PORT = process.env.Port || 5000;
-app.listen(PORT);
-// connectDB().then(() => {
-//   app.listen(PORT, () => {
-//   app.listen(PORT, () => {
-//     console.log("Server is running: " + PORT);
-//   });
-// });
+// app.listen(PORT);
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log("Server is running: " + PORT);
+  });
+});
+
+
