@@ -12,5 +12,6 @@ To run the application, follow these steps:
 2. download and install yarn module 
    ```bash
    cd Backend
+   npm install -g yarn
    yarn install
    yarn dev # server will start on nodemon mode
