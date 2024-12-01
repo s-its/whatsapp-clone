@@ -79,7 +79,7 @@ exports.userDetails = catchAsyncError(async(req,res)=>{
 // update user
 
 exports.updateUser = catchAsyncError(async(req,res)=>{
-  const{iserId,name,profilePic} = req.body;
+  const{userId,name,profilePic} = req.body;
   const updateUser = await UserModel.updateOne(
     {_id: userId},{name,profilePic}
   );
@@ -97,3 +97,5 @@ exports.updateUser = catchAsyncError(async(req,res)=>{
     });
   }
 });
+
+// 
