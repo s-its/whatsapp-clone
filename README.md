@@ -15,3 +15,6 @@ To run the application, follow these steps:
    npm install -g yarn
    yarn install
    yarn dev # server will start on nodemon mode
+
+
+   
