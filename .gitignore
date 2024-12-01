@@ -130,3 +130,4 @@ dist
 /.idea/
 
 *.yarn.lock
+/Backend/yarn.lock
