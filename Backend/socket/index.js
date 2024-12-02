@@ -4,6 +4,7 @@ const http = require("http");
 const UserModel = require("../models/userModel");
 const messageModel = require("../models/messageModel");
 const conversationModel = require("../models/conversationModel");
+const getConversation = require("../utils/getConversation");
 const app = express();
 
 // socket connection
@@ -52,7 +53,7 @@ io.on("connection", async (socket) => {
         ],
       })
       .populate("messages")
-      .sor({ updateAt: -1 });
+      .sort({ updateAt: -1 });
 
     socket.emit("message", getConMessage?.messages || []);
   });
@@ -79,25 +80,68 @@ io.on("connection", async (socket) => {
     if (message) {
       await ConversationModel.updateOne(
         { _id: conversation?._id },
-        { 
-            $push: { message: message?._id } 
+        {
+          $push: { message: message?._id },
         }
       );
       const getUpdatedConversation = await ConversationModel.findOne({
-        $or:[
-            {sender: data?.sender, receiver:data?.receiver},
-            {sender: data?.receiver, receiver:data?.sender},
-        ]
+        $or: [
+          { sender: data?.sender, receiver: data?.receiver },
+          { sender: data?.receiver, receiver: data?.sender },
+        ],
       })
-      .populate("messages")
-      .sort({updated : -1});
+        .populate("messages")
+        .sort({ updated: -1 });
 
-      io.to(data?.sender).emit("message", getUpdatedConversation?.messages || []);
+      io.to(data?.sender).emit(
+        "message",
+        getUpdatedConversation?.messages || []
+      );
+      io.to(data?.receiver).emit(
+        "message",
+        getUpdatedConversation?.messages || []
+      );
 
+      //    send conversation to fronted
+
+      const sendConv = await getUpdatedConversation(data?.sender);
+      const receiverConv = await getUpdatedConversation(data?.receiver);
+
+      io.to(data?.sender).emit("conversation", sendConv);
+      io.to(data?.receiver).emit("conversation", receiverConv);
     }
-  });io.to(data?.receiver).emit("message" , getUpdatedConversation?.messages || []);
+  });
 
-    //    send conversation to fronted
-    const sendConv = await getUpdatedConversation(data?.sender);
+  // side bar
+  socket.on("sidebar", async (userId) => {
+    console.log(userId, "userId");
 
+    const conversation = await getConversation(userId);
+    socket.emit("conversation", conversation);
+  });
+
+  // seen messages
+  socket.on("seen", async (msgByUser) => {
+    let conversation = await ConversationModel.findOne({
+      $or: [
+        { sender: user?._id, receiver: msgByUser },
+        { sender: msgByUser, receiver: user?._id },
+      ],
+    }).populate("messages");
+
+    await MessageModel?.updateMany(
+      { _id: { $in: conversation?.messages }, msgByUser },
+      { $set: { seen: true } }
+    );
+    const sendConv = await getUpdatedConversation(data?._id);
+    const receiverConv = await getUpdatedConversation(data?.msgByUser);
+
+    io.to(user?._id?.toString()).emit("conversation", sendConv);
+    io.to(data?.receiver).emit("conversation", receiverConv);
+  });
+  socket.on("disconnect", () => {
+    onlineUsers?.delete(user?._id?.toString());
+  });
 });
+
+module.exports = { app, server };
