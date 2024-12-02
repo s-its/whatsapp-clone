@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+const UserModel = require("../models/userModel");
+
 const getUserByToken = async(token) =>{
     if(!token){
         return{
@@ -6,8 +9,7 @@ const getUserByToken = async(token) =>{
         };
     }else{
         const decodeData = jwt.verify(token,process.env.JWT_SECRET_KEY);
-        const user = await userModel.findById(decodeData.id);
-        return user;
+        return await UserModel.findById(decodeData.id);
     }
 };
 
