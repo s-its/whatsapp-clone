@@ -8,7 +8,7 @@ const {app,server} = require("./socket/index");
 
 app.use(
     cors({
-      origin: process.env.FRONTED_URL,
+      origin: process.env.REACT_APP_FRONTEND_URL,
       Credentials: true,
     })
 );
