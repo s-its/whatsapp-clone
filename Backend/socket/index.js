@@ -14,8 +14,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTED_URL,
-    Credentials: true,
+    origin: process.env.REACT_APP_FRONTEND_URL,
+    credentials: true,
   },
 });
 
@@ -29,7 +29,7 @@ io.on("connection", async (socket) => {
 
   // join room
   socket.join(user?._id?.toString());
-  onlineUsers.push(user?._id?.toString());
+  onlineUsers?.add(user?._id?.toString());
   io.emit("onlineUser", Array.from(onlineUsers));
 
   // message page
