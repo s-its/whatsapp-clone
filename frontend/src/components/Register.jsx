@@ -123,7 +123,7 @@ const Register = () =>{
             </SubmitButton>
           </form>
           <p className={"mt-3 text-center"}>
-            New User ? <Link to={"/register"} className={"text-blue-500"}>Register</Link>
+            Existing User ? <Link to={"/login"} className={"text-blue-500"}>Login</Link>
           </p>
         </div>
       </div>
