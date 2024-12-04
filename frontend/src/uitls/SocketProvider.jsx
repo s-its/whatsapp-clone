@@ -15,7 +15,7 @@ const SocketProvider = ({ children }) => {
 
   const socket = useMemo(() => {
     if (user?.token) {
-      return io(process.env.REACT_APP_BACKEND_URL, { auth: { token: user?.token } });
+      return io("http://localhost:5000", { auth: { token: user?.token } });
     }
   }, [user?.token]);
   return (

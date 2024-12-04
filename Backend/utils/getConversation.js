@@ -25,7 +25,8 @@ const getConversation = async (userId) => {
         _id: conv?.id,
         sender: conv?.sender,
         receiver: conv?.receiver,
-        countUnseenMsg: countUnseenMsg
+        countUnseenMsg: countUnseenMsg,
+        lastMsg: conv?.messages[conv.messages?.length -1],
       };
     });
     return conversation;
