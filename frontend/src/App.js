@@ -8,6 +8,7 @@ import {useLocalStorage} from "@mantine/hooks";
 const Login = lazy(() => import("./components/Login"));
 const Register = lazy(() => import("./components/Register"));
 const Home = lazy(() => import("./components/Home"));
+const UserDetails = lazy(() => import("./components/UserDetails"));
 function App() {
   const [user] = useLocalStorage({
     key: "userDate",
@@ -27,6 +28,7 @@ function App() {
             </SocketProvider>
             }>
             <Route path="/" element={<Home />} />
+            <Route path="/:userId" element={<UserDetails />} />
           </Route>
         </Routes>
       </Suspense>
