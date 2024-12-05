@@ -6,4 +6,4 @@ const SubmitButton = ({ children }) =>{
   )
 }
 
-export default SubmitButton
+export default SubmitButton;

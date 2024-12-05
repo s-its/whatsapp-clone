@@ -6,4 +6,4 @@ const ProtectedRoute = ({children,user,redirect = "/login"}) => {
   return children || <Outlet/>;
 };
 
-export default ProtectedRoute
+export default ProtectedRoute;
