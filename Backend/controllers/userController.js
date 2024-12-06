@@ -119,3 +119,17 @@ exports.searchUser = catchAsyncErrors(async (req, res) => {
     success: true,
   });
 });
+
+// sample api
+exports.sample = catchAsyncErrors(async (req, res) => {
+  const userName = req.userName;
+
+  if (userName) {
+    return res.status(200).json({
+      message: "Sample User",
+      userName,
+      success: true,
+    });
+  }
+  
+});
