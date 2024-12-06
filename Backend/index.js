@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/connection");
 const router = require("./routes/index");
 const { app, server } = require("./socket/index");
-const sample = require('./models/sample');
 app.use(
     cors({
       origin: process.env.REACT_APP_FRONTEND_URL,

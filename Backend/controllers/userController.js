@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const sendToken = require("../utils/sendToken");
 const { query } = require("express");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+const sample = require("../models/sample")
 
 exports.registerUser = catchAsyncError(async (req, res) => {
   const { name,email, password, profilePic } = req.body;
@@ -122,14 +123,13 @@ exports.searchUser = catchAsyncErrors(async (req, res) => {
 
 // sample api
 exports.sample = catchAsyncErrors(async (req, res) => {
-  const userName = req.userName;
-
-  if (userName) {
-    return res.status(200).json({
-      message: "Sample User",
-      userName,
-      success: true,
-    });
-  }
+  const {userName} = req.body;
+  console.log("userName" , userName)
   
+  return res.status(200).json({
+    message: "Sample User",
+    userName,
+    success: true,
+  }); 
 });
+

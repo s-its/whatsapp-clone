@@ -31,7 +31,7 @@ const Home = () => {
                 viewBox="0 0 303 172"
                 width="360"
                 preserveAspectRatio="xMidYMid meet"
-                class=""
+                className=""
                 fill="none"
             >
               <title>intro-md-beta-logo-dark</title>
