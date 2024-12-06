@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useState} from "react";
 import {GetSocket} from "../uitls/SocketProvider";
 import {
   ArrowUpLeft,
@@ -8,11 +8,11 @@ import {
   MessageCircle,
   SquarePlus,
   UserPlus,
-  Video
+  Video,
 } from "lucide-react";
 import Avatar from "./Avatar";
-import {Link, useNavigate} from "react-router-dom";
-import {useLocalStorage} from "@mantine/hooks";
+import { useLocalStorage } from "@mantine/hooks";
+import { Link, useNavigate } from "react-router-dom";
 import AddUser from "./AddUser";
 import EditProfile from "./EditProfile";
 
@@ -48,9 +48,10 @@ const SideBar = () => {
           }
         });
         setAllUsers(conversationUserData);
-      })
+      });
     }
   }, [socket, user]);
+
   const handleLogout = () => {
     setUser(null);
     navigate("/login");
@@ -66,7 +67,7 @@ const SideBar = () => {
             </div>
 
             <div
-                title={"Add friend"}
+                title="Add friend"
                 onClick={() => setOpenSearchUser(true)}
                 className={"w-12 h-12 flex justify-center items-center cursor-pointer text-slate-300 hover:text-slate-200 rounded"}>
               <UserPlus size={20}/>
@@ -157,4 +158,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar
+export default SideBar;

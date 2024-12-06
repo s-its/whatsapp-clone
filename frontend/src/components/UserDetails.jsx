@@ -84,7 +84,7 @@ const UserDetails = () => {
     console.log(upload, "upload");
     setLoading(false);
     setToggle(false);
-    setMessage({ ...message, [type]: upload?.url });
+    setMessage({ ...message, [type]: upload });
   };
   return (
       <DashboardLayout>
@@ -249,7 +249,8 @@ const UserDetails = () => {
 
               {toggle && (
                   <div className="bg-secondary text-gray-300 shadow rounded absolute bottom-14 w-36">
-                    <form>
+
+                    <div>
                       <label
                           htmlFor="uploadImage"
                           className="flex items-center p-2 px-3 gap-3 hover:bg-gray-600 cursor-pointer"
@@ -282,7 +283,7 @@ const UserDetails = () => {
                           onChange={(e) => handleUpload(e, "videoUrl")}
                           className="hidden"
                       />
-                    </form>
+                    </div>
                   </div>
               )}
             </form>

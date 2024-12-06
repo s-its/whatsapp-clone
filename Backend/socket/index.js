@@ -1,5 +1,5 @@
 const express = require("express");
-const {Server} = require("socket.io");
+const { Server } = require("socket.io");
 const http = require("http");
 const UserModel = require("../models/userModel");
 const MessageModel = require("../models/messageModel");
@@ -22,14 +22,17 @@ const io = new Server(server, {
 // online users
 
 const onlineUsers = new Set();
+
 io.on("connection", async (socket) => {
   const token = socket.handshake.auth.token;
   console.log(token, "token");
+
   const user = await getUserByToken(token);
 
   // join room
   socket.join(user?._id?.toString());
   onlineUsers?.add(user?._id?.toString());
+
   io.emit("onlineUser", Array.from(onlineUsers));
 
   // message page
@@ -42,6 +45,7 @@ io.on("connection", async (socket) => {
       profilePic: userDetails?.profilePic,
       online: onlineUsers?.has(userId),
     };
+
     socket.emit("messageUser", data);
 
     // old messages
@@ -66,17 +70,21 @@ io.on("connection", async (socket) => {
         {sender: data?.receiver, receiver: data?.sender},
       ],
     });
+
     if (!conversation) {
       conversation = await ConversationModel.create({
         sender: data?.sender,
         receiver: data?.receiver,
       });
     }
+
     const message = await MessageModel.create({
       text: data?.text,
       imageUrl: data?.imageUrl,
       videoUrl: data?.videoUrl,
+      msgByUser: data?.msgByUserId,
     });
+
     if (message) {
       await ConversationModel.updateOne(
           {_id: conversation?._id},
@@ -84,6 +92,7 @@ io.on("connection", async (socket) => {
             $push: { messages: message?._id },
           }
       );
+
       const getUpdatedConversation = await ConversationModel.findOne({
         $or: [
           {sender: data?.sender, receiver: data?.receiver},
@@ -93,10 +102,12 @@ io.on("connection", async (socket) => {
       .populate("messages")
       .sort({updated: -1});
 
+      // send new message
       io.to(data?.sender).emit(
           "message",
           getUpdatedConversation?.messages || []
       );
+
       io.to(data?.receiver).emit(
           "message",
           getUpdatedConversation?.messages || []
@@ -107,8 +118,8 @@ io.on("connection", async (socket) => {
       const sendConv = await getConversation(data?.sender);
       const receiverConv = await getConversation(data?.receiver);
 
-      io.to(data?.sender).emit("conversation", sendConv);
-      io.to(data?.receiver).emit("conversation", receiverConv);
+      io.to(data?.sender).emit("conversation", sendConv || []);
+      io.to(data?.receiver).emit("conversation", receiverConv || []);
     }
   });
 
@@ -117,6 +128,7 @@ io.on("connection", async (socket) => {
     console.log(userId, "userId");
 
     const conversation = await getConversation(userId);
+
     socket.emit("conversation", conversation);
   });
 
@@ -124,24 +136,36 @@ io.on("connection", async (socket) => {
   socket.on("seen", async (msgByUser) => {
     let conversation = await ConversationModel.findOne({
       $or: [
-        {sender: user?._id, receiver: msgByUser},
-        {sender: msgByUser, receiver: user?._id},
+        { sender: user?.Id, receiver: msgByUser },
+        { sender: msgByUser, receiver: user?.Id },
       ],
-    }).populate("messages");
+    });
 
-    await MessageModel?.updateMany(
-        {_id: {$in: conversation?.messages}, msgByUser},
-        {$set: {seen: true}}
+    const getMessages = conversation?.messages || [];
+
+    await MessageModel.updateMany(
+        {
+          _id: { $in: getMessages },
+          msgByUser,
+        },
+        {
+          $set: { seen: true },
+        }
     );
-    const sendConv = await getConversation(user?._id);
+
+    const sendConv = await getConversation(user?._id?.toString());
     const receiverConv = await getConversation(msgByUser);
 
-    io.to(user?._id?.toString()).emit("conversation", sendConv);
-    io.to(msgByUser).emit("conversation", receiverConv);
+    io.to(user?._id?.toString()).emit("conversation", sendConv || []);
+    io.to(msgByUser).emit("conversation", receiverConv || []);
   });
+
   socket.on("disconnect", () => {
-    onlineUsers?.delete(user?._id?.toString());
+    onlineUsers.delete(user?._id?.toString());
   });
 });
 
-module.exports = {app, server};
+module.exports = {
+  app,
+  server,
+};
