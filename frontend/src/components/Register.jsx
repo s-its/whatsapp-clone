@@ -51,9 +51,10 @@ const Register = () =>{
   const handleSubmit = async (event)=>{
     event.preventDefault();
     event?.stopPropagation();
-
+    console.log("debugger1")
     try{
       const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/register`, registerData);
+      console.log("debugger2" , res.data)
       if (res.data.success) {
         toast.success(res?.data?.message);
         navigate("/login");
