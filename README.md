@@ -33,5 +33,8 @@ To run the application, follow these steps:
    yarn start
    ```
 
+<!-- for image build  -->
+
+build image : docker build -t <filename>:<tagnumber> .
 
    
